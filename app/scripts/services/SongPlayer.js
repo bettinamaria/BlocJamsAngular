@@ -169,12 +169,23 @@
          * @desc Set current time (in seconds) of currently playing song
          * @param {Number} time
          */
-         SongPlayer.setCurrentTime = function(time) {
+          SongPlayer.setCurrentTime = function(time) {
              if (currentBuzzObject) {
                  currentBuzzObject.setTime(time);
              }
      };
-     
+
+        /**
+         * @function setVolume
+         * @desc Adds volume controls to player bar.
+         * @param {Number} time
+         */
+         SongPlayer.setVolume = function(volume) {
+             var songVolume = SongPlayer.volume;
+             if (currentBuzzObject) {
+                 currentBuzzObject.setVolume(volume);
+             }
+     };
      
          return SongPlayer;
      }
