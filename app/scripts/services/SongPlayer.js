@@ -14,6 +14,8 @@
          */
          var currentBuzzObject = null;
          
+         SongPlayer.volume = null;
+         
          /**
          * @function setSong
          * @desc Stops currently playing song and loads new audio file as currentBuzzObject
@@ -29,7 +31,7 @@
                 preload: true
             });
              
-            currentBuzzObject.bind('timeupdate', function()){
+            currentBuzzObject.bind('timeupdate', function() {
                 $rootScope.$apply(function() {
                     SongPlayer.currentTime = currentBuzzObject.getTime();
                 });
@@ -45,7 +47,7 @@
          */
         var getSongIndex = function(song) {
             return currentAlbum.songs.indexOf(song);
-        });
+        };
          
         /**
         * @desc Active song object from list of songs
@@ -57,7 +59,7 @@
          * @desc Current playback time (in seconds) of currently playing song
          * @type {Number}
          */
-         Song.Player.currentTime = null;
+         SongPlayer.currentTime = null;
          
          
           /**
@@ -66,15 +68,8 @@
          * @param {Object} song
          */
          var playSong = function(song) {
-            if (currentBuzzObject) {
-                currentBuzzObject.play();
-                song.playing = true;
-            }
-            currentBuzzObject = new buzz.sound(song.audioUrl, {
-                formats: ['mp3'],
-                preload: true
-            });
-            SongPlayer.currentSong = song;
+            currentBuzzObject.play();
+            song.playing = true;
          };
          
           /**
@@ -83,15 +78,9 @@
          * @param {Object} song
          */
          var stopSong = function(song) {
-            if (currentBuzzObject) {
-                currentBuzzObject.stop();
-                song.playing = null;
-            }
-            currentBuzzObject = new buzz.sound(song.audioUrl, {
-                formats: ['mp3'],
-                preload: true
-            });
-            SongPlayer.currentSong = song;
+            currentBuzzObject.stop();
+            song.playing = null;
+
          };
          
          
@@ -101,6 +90,7 @@
          * @param {Object} song
          */
          SongPlayer.play = function(song) {
+             console.log('attempting play');
                     song = song || SongPlayer.currentSong;
                     if (SongPlayer.currentSong !== song) {
                     setSong(song);
@@ -110,8 +100,7 @@
                      playSong(song);
                  }
                }   
-          }   
-      };
+          };
     
          /**
          * @function pause
@@ -151,13 +140,16 @@
          * @desc Retrieves index of currently playing song and then increases that index by one to start next song. 
          */
          SongPlayer.next = function() {
+             console.log("pushed next");
          var currentSongIndex = getSongIndex(SongPlayer.currentSong);
          currentSongIndex++;
              
-        if (currentSongIndex > 0) {
+        if (currentSongIndex >= currentAlbum.songs.length) {
+            console.log("current song index is " + currentSongIndex);
             stopSong(song);
             SongPlayer.currentSong.playing = null;
         } else {
+            console.log("current song index greater than 0");
           var song = currentAlbum.songs[currentSongIndex];
           setSong(song);
           playSong(song);
@@ -178,10 +170,10 @@
         /**
          * @function setVolume
          * @desc Adds volume controls to player bar.
-         * @param {Number} time
+         * @param {Number} volume
          */
          SongPlayer.setVolume = function(volume) {
-             var songVolume = SongPlayer.volume;
+             SongPlayer.volume = volume;
              if (currentBuzzObject) {
                  currentBuzzObject.setVolume(volume);
              }
